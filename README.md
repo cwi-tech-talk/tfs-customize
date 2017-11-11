@@ -6,9 +6,9 @@
 * [Glossário](#glossário)
 * [Interface Web](#interface-web)
 * [Pré Requisitos](#pré-requisitos)
-* [Arquivos de Configuração](#arquivos-de-configuração)
 * [Usando o Visual Studio](#usando-o-visual-studio)
 * [Por Linha de Comando](#por-linha-de-comando)
+* [Arquivos de Configuração](#arquivos-de-configuração)
 
 ## Versões
 

@@ -2,11 +2,11 @@
 
 ## Roadmap
 
-* [Versões](#versoes)
-* [Glossário](#glossario)
+* [Versões](#versões)
+* [Glossário](#glossário)
 * [Interface Web](#interface-web)
-* [Pré Requisitos](#pre-requisitos)
-* [Arquivos de Configuração](#arquivos-de-configuracao)
+* [Pré Requisitos](#pré-requisitos)
+* [Arquivos de Configuração](#arquivos-de-configuração)
 * [Usando o Visual Studio](#usando-o-visual-studio)
 * [Por Linha de Comando](#por-linha-de-comando)
 

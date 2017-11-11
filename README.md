@@ -1,5 +1,22 @@
 ![alt text](http://imageshack.com/a/img922/5924/DMrAzb.png)
 
+## Roadmap
+
+* [Versões](#versoes)
+* [Glossário](#glossario)
+* [Interface Web](#interface-web)
+* [Pré Requisitos](#pre-requisitos)
+* [Arquivos de Configuração](#arquivos-de-configuracao)
+* [Usando o Visual Studio](#usando-o-visual-studio)
+* [Por Linha de Comando](#por-linha-de-comando)
+
+## Versões
+
+* 2013
+* **2015** [ 1 | 2 | **3** | 4 ]
+* 2017
+* 2018.RC
+
 ## Glossário
 
 * `template` - Modelo de projeto utilizado na criação de um novo projeto TFS. _Templates_ são vinculados a uma _collection_ e passam ser apresentados como uma opção no momento de criar um novo projeto dentro dessa _collection_. Uma vez criado um projeto com um template, ele **nunca** mais poderá ser alterado, permitindo apenas customizações.
@@ -21,15 +38,43 @@
 
 * `work-item` - Um _work-item_ é um ítem de trabalho ( ¯\\\_(ツ)\_/¯ ). Cada elemento passível de ser entregue é um _work-item_: _tasks_, _user stories_, _features_, enfim. Os _work-items_ são visualizados no _backlog_ e no _board_ (desde que estejam em uma _iteration_) do projeto.
 
-## Estrutura de Arquivos
+## Interface Web
 
-A estrutura é bem simples e consiste em apenas uma pasta `src` contendo todos os arquivos `xml` do projeto. Isso inclui o `process-config.xml` e `categories.xml` bem como uma subpasta contento todos os _work-items_. 
+Apesar de poucas, o TFS permite que algumas configurações sejam feias pela própria ferramenta web. Dentre essas configurações, podemos:
 
-* `process-config.xml` - é o principal arquivo do projeto. Nele estão contidas as informações básicas do projeto, fluxos de trabalho, os possíveis estados de cada item, as definições de campos, enfim. Editar esse arquivo pode causar inúmeros problemas e é comum deixar o projeto todo inacessível se houver algum erro no arquivo. Esse arquivo será editado quando for adicionado ou removido algum estado do workflow de algum item ou quando for necessário a cor de algum item no board.
+### Taskboard
 
-* `categories.xml` -  esse arquivo serve para definir as categorias de _work-items_. Na prática, só vamos editar esse arquivo quando um novo _work-item_ seja adicionado ao projeto, pois o novo item só irá aparecer no board se estiver referenciado na categoria **TaskCategory**.
+* Exibir ou não o _ID_ do card
+* Exibir ou não o _remaining work_
+* Exibir ou não as _tags_
+* Alterar modo de visualização do _assigned to_
+* Exibir campos customizados aos cards
+* Agrupar por _user story_ ou por _assigned to_
+* Destacar cards por _assigned to_
+* Ocultar campos com valores vazio ³
+* Alterar o estilo do card de acordo com o valor de um campo ³
+* Alterar visibilidade de _user story_, _feature_ e _epic_ ³
+* Configurar _working days_ ³
+* Comportamento de _bugs_ ³
 
-* `work-item.xml` - esse arquivo define um _work-item_, com seu workflow, campos e restrições. Dificilmente é alterado manualmente, a menos que se deseja criar um novo item com base em um pré-existente. Nesse caso, é muito útil copiar o arquivo existente e apenas alterar o nome do mesmo, importando-o para o TFS por linha de comando.
+> Nota: é possível definir essas configurações de forma independente para cada _work-item_
+
+> ³ Disponível no **Update 3**
+
+### Board
+
+* Exibir ou não o _ID_ do card
+* Exibir ou não o _story points_
+* Exibir ou não as _tags_
+* Alterar modo de visualização do _assigned to_
+* Exibir campos customizados aos cards
+* Separar as US em raias - _swimlanes_
+* Definir as colunas que aparecem no board ¯\\\_(ツ)\_/¯
+* Definir cores para as _tags_ ³ ¯\\\_(ツ)\_/¯
+* Configurar ordenação de _user stories_ ³
+* Configurar _cumulative flow_ ³
+
+> ³ Disponível no **Update 3**
 
 ## Customização de Projetos
 
@@ -40,6 +85,30 @@ Para customizar um projeto do TFS é necessário:
 * Windows - né? :)
 * Visual Studio - versão **maior ou igual** à versão do TFS
 * Productivity Power Tools - versão **igual** a do Visual Studio
+
+### Usando o Visual Studio
+
+Vamos recorrer ao Visual Studio quando for necessário alterar campos de um item, alterar as regras de preenchimento dos campos ou ainda o workflow do mesmo. Tudo isso pode ser feito apenas editando e importando arquivos `xml`, mas é muito mais fácil pelo Visual Studio nesses casos.
+
+É possível alterar tanto ítens direto do projeto, quanto arquivos xml em disco. Também é possível exportar e importar _work-items_ pela interface do Visual Studio, mas não creio que seja possível exportar o _process-config_ e o _categories_.
+
+Para alterar um _work-item_ existente no servidor, clique em _Tools > Process Editor > Open WITD from Server_. Se for a primeira vez, será necessário informar um usuário e senha válidos - lembrando que é necessário ter permissão de _project administrator_ para ter acesso às custmizações. Após logado, selecione o projeto desejado e, então, o item desejado.
+
+* **Fields** - Primeira aba. Permite adicionar novas propriedades aos ítens, além de definir regras de preenchimento para os campos, para que seja possível estipular quais informações são default, obrigatórias, opcionais, disponíveis em uma lista, enfim. Também é possível criar campos novos customizados para atender particularidades do projeto.
+
+![Customizando usando o Visual Studio na aba Fields](http://imageshack.com/a/img922/218/QySrBu.jpg)
+
+> Nota: Uma vez criado um novo campo, é **impossível** alterar seu _reference name_ ou _data type_. Ou seja, uma vez criado um campo como `String`, ele será para sempre `String`.
+
+* **Layout** - Segunda aba. Permite customizar a interface gráfica de criação e edição do _work-item_. É possível adicionar, na interface, campos customizados criados na primeira aba, alterar os labels dos campos e estrutura de layout da modal de edição do ítem. 
+
+![Customizando usando o Visual Studio na aba Layout](http://imageshack.com/a/img924/9210/7pXoVg.png)
+
+* **Workflow** - Segunda aba. Permite definir os status e transições entre status de um item. É possível, também, definir regras de preenchimento de campos específicos para cada status do item, como definir que para o status _closed_ é necessário ter apropriado horas no campo _completed work_. Nas transições é possível definir que campos terão valores alterados automaticamente após o item passar para determinado status.
+
+![Customizando usando o Visual Studio na aba Workflow](http://imageshack.com/a/img923/3535/K2OcAV.png)
+
+> Nota: Se for criado um status novo, diferente de todos que existam em outros ítens, será necessário alterar o _process-config_ para adicionar esse status.
 
 ### Por Linha de Comando
 
@@ -105,21 +174,12 @@ witadmin renamewitd /collection:"URLDaCollection" /p:"NomeDoProjeto" /n:"NomeDoW
 
 > Nota: para documentação completa sobre esses e outros comandos, acesso a [documentação oficial](https://docs.microsoft.com/en-us/vsts/work/customize/reference/witadmin/witadmin-import-export-manage-wits).
 
-### Usando o Visual Studio
 
-Vamos recorrer ao Visual Studio quando for necessário alterar campos de um item, alterar as regras de preenchimento dos campos ou ainda o workflow do mesmo. Tudo isso pode ser feito apenas editando e importando arquivos `xml`, mas é muito mais fácil pelo Visual Studio nesses casos.
 
-É possível alterar tanto ítens direto do projeto, quanto arquivos xml em disco. Também é possível exportar e importar _work-items_ pela interface do Visual Studio, mas não creio que seja possível exportar o _process-config_ e o _categories_.
+### Arquivos de Configuração
 
-Para alterar um _work-item_ existente no servidor, clique em _Tools > Process Editor > Open WITD from Server_. Se for a primeira vez, será necessário informar um usuário e senha válidos - lembrando que é necessário ter permissão de _project administrator_ para ter acesso às custmizações. Após logado, selecione o projeto desejado e, então, o item desejado.
+* `process-config.xml` - é o principal arquivo do projeto. Nele estão contidas as informações básicas do projeto, fluxos de trabalho, os possíveis estados de cada item, as definições de campos, enfim. Editar esse arquivo pode causar inúmeros problemas e é comum deixar o projeto todo inacessível se houver algum erro no arquivo. Esse arquivo será editado quando for adicionado ou removido algum estado do workflow de algum item ou quando for necessário a cor de algum item no board.
 
-* **Campos** - Primeira aba. Permite adicionar novas propriedades aos ítens, além de definir regras de preenchimento para os campos, para que seja possível estipular quais informações são default, obrigatórias, opcionais, disponíveis em uma lista, enfim. Também é possível criar campos novos customizados para atender particularidades do projeto.
+* `categories.xml` -  esse arquivo serve para definir as categorias de _work-items_. Na prática, só vamos editar esse arquivo quando um novo _work-item_ seja adicionado ao projeto, pois o novo item só irá aparecer no board se estiver referenciado na categoria **TaskCategory**.
 
-> Nota: Uma vez criado um novo campo, é **impossível** alterar seu _reference name_ ou _data type_. Ou seja, uma vez criado um campo como `String`, ele será para sempre `String`.
-
-* **Workflow** - Segunda aba. Permite definir os status e transições entre status de um item. É possível, também, definir regras de preenchimento de campos específicos para cada status do item, como definir que para o status _closed_ é necessário ter apropriado horas no campo _completed work_. Nas transições é possível definir que campos terão valores alterados automaticamente após o item passar para determinado status.
-
-> Nota: Se for criado um status novo, diferente de todos que existam em outros ítens, será necessário alterar o _process-config_ para adicionar esse status.
-
-* **Form** - Terceira aba. Permite customizar a interface gráfica de criação e edição do _work-item_. É possível adicionar, na interface, campos customizados criados na primeira aba, alterar os labels dos campos e estrutura de layout da modal de edição do ítem. 
-
+* `work-item.xml` - esse arquivo define um _work-item_, com seu workflow, campos e restrições. Dificilmente é alterado manualmente, a menos que se deseja criar um novo item com base em um pré-existente. Nesse caso, é muito útil copiar o arquivo existente e apenas alterar o nome do mesmo, importando-o para o TFS por linha de comando.
